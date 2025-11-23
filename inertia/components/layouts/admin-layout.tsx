@@ -1,6 +1,7 @@
 import * as React from 'react'
 import Sidebar from './sidebar'
 import { DashboardIcon, CubeIcon, LayersIcon, GearIcon } from '@radix-ui/react-icons'
+import Notification from '~/components/ui/notification'
 
 interface AdminLayoutProps {
     children: React.ReactNode
@@ -15,11 +16,14 @@ const sidebarItems = [
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
     return (
-        <div className="flex h-screen bg-gray-50">
-            <Sidebar items={sidebarItems} />
-            <main className="flex-1 overflow-y-auto">
-                <div className="p-8">{children}</div>
-            </main>
-        </div>
+        <>
+            <div className="flex h-screen bg-gray-50">
+                <Sidebar items={sidebarItems} />
+                <main className="flex-1 overflow-y-auto">
+                    <div className="p-8">{children}</div>
+                </main>
+            </div>
+            <Notification />
+        </>
     )
 }

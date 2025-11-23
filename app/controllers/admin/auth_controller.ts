@@ -21,22 +21,20 @@ export default class AdminAuthController {
             const user = await User.verifyCredentials(email, password)
             await auth.use('web').login(user)
 
-            session.flash('success', 'Login successful!')
-
             return response.redirect('/')
         } catch (error) {
-            if (error.messages) {
-                session.flash('errors', error.messages)
-            } else {
-                session.flash('error', 'Invalid email or password')
-            }
+            session.flash('notification', {
+                type: 'error',
+                message: 'Invalid email or password',
+            })
+
             return response.redirect().back()
         }
     }
 
-    async logout({ auth, response, session }: HttpContext) {
+    async logout({ auth, response }: HttpContext) {
         await auth.use('web').logout()
-        session.flash('success', 'Logged out successfully')
+
         return response.redirect('/login')
     }
 }
