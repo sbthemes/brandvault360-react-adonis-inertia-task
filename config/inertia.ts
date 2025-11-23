@@ -13,7 +13,7 @@ const inertiaConfig = defineConfig({
     sharedData: {
         user: (ctx) => ctx.inertia.always(() => ctx.auth?.user ?? null),
         notification: (ctx) => {
-            const data = ctx.session.flashMessages.get('notification')
+            const data = ctx?.session?.flashMessages?.get('notification')
 
             return data ?? null
         },

@@ -3,6 +3,7 @@ export { default as Input } from './ui/input'
 export { default as PasswordInput } from './ui/password-input'
 export { default as FormField } from './ui/form-field'
 export { default as RadixFormField } from './ui/radix-form-field'
+export { default as Pagination } from './ui/pagination'
 export { default as AuthLayout } from './layouts/auth-layout'
 export { default as AdminLayout } from './layouts/admin-layout'
 
