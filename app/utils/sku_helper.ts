@@ -20,24 +20,24 @@ export function generateBaseSku(
     return `${categoryCode}-${productCode}-${productId}`
 }
 
+export function generateOptionValueSku(valueName: string): string {
+    return valueName
+        .toUpperCase()
+        .trim()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/[\s_-]+/g, '-')
+        .split('-')
+        .filter((w) => w.length > 0)
+        .map((w) => w.substring(0, 10))
+        .join('-')
+        .substring(0, 8)
+}
+
 export function generateVariantSku(
     productSku: string,
     optionValues: Array<{ optionName: string; valueName: string }>
 ): string {
-    const valueCodes = optionValues.map((ov) => {
-        const code = ov.valueName
-            .toUpperCase()
-            .trim()
-            .replace(/[^\w\s-]/g, '')
-            .replace(/[\s_-]+/g, '-')
-            .split('-')
-            .filter((w) => w.length > 0)
-            .map((w) => w.substring(0, 4))
-            .join('-')
-            .substring(0, 8)
-        return code
-    })
-
+    const valueCodes = optionValues.map((ov) => generateOptionValueSku(ov.valueName))
     return `${productSku}-${valueCodes.join('-')}`
 }
 

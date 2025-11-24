@@ -65,3 +65,14 @@ router
             .as('options.destroy')
     })
     .use(middleware.auth())
+
+router
+    .group(() => {
+        router.get('/categories', '#controllers/api/configurator_controller.getCategories')
+        router.get(
+            '/products/:categoryId',
+            '#controllers/api/configurator_controller.getProductsByCategory'
+        )
+        router.get('/configure', '#controllers/api/configurator_controller.configure')
+    })
+    .prefix('/api')

@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, manyToMany } from '@adonisjs/lucid/orm'
+import { BaseModel, column, computed, manyToMany } from '@adonisjs/lucid/orm'
 import type { ManyToMany } from '@adonisjs/lucid/types/relations'
+import env from '#start/env'
 import Option from './option.js'
 
 export default class Category extends BaseModel {
@@ -31,4 +32,18 @@ export default class Category extends BaseModel {
         pivotRelatedForeignKey: 'option_id',
     })
     declare options: ManyToMany<typeof Option>
+
+    @computed()
+    get imageUrl(): string | null {
+        if (!this.image) {
+            return null
+        }
+
+        if (this.image.startsWith('http://') || this.image.startsWith('https://')) {
+            return this.image
+        }
+
+        const protocol = env.get('APP_URL') || `http://${env.get('HOST')}:${env.get('PORT')}`
+        return `${protocol}${this.image}`
+    }
 }

@@ -14,7 +14,9 @@ export default class OptionValue extends BaseModel {
     @column()
     declare name: string
 
-    @column()
+    @column({
+        consume: (value: number) => Number(value),
+    })
     declare priceAdder: number
 
     @column.dateTime({ autoCreate: true })
