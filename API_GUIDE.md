@@ -30,24 +30,24 @@ curl -X GET http://localhost:3333/api/categories
 
 ```json
 [
-  {
-    "id": 1,
-    "name": "Laptops",
-    "slug": "laptops",
-    "description": "High-performance laptops",
-    "image": "/uploads/categories/laptops.jpg",
-    "created_at": "2024-01-15T10:30:00.000Z",
-    "updated_at": "2024-01-15T10:30:00.000Z"
-  },
-  {
-    "id": 2,
-    "name": "Smartphones",
-    "slug": "smartphones",
-    "description": "Latest smartphones",
-    "image": "/uploads/categories/smartphones.jpg",
-    "created_at": "2024-01-15T10:35:00.000Z",
-    "updated_at": "2024-01-15T10:35:00.000Z"
-  }
+    {
+        "id": 1,
+        "name": "Laptops",
+        "slug": "laptops",
+        "description": "High-performance laptops",
+        "image": "/uploads/categories/laptops.jpg",
+        "created_at": "2024-01-15T10:30:00.000Z",
+        "updated_at": "2024-01-15T10:30:00.000Z"
+    },
+    {
+        "id": 2,
+        "name": "Smartphones",
+        "slug": "smartphones",
+        "description": "Latest smartphones",
+        "image": "/uploads/categories/smartphones.jpg",
+        "created_at": "2024-01-15T10:35:00.000Z",
+        "updated_at": "2024-01-15T10:35:00.000Z"
+    }
 ]
 ```
 
@@ -78,77 +78,77 @@ curl -X GET "http://localhost:3333/api/products/1?page=1&limit=15"
 
 ```json
 {
-  "category": {
-    "id": 1,
-    "name": "Laptops",
-    "slug": "laptops",
-    "description": "High-performance laptops",
-    "image": "/uploads/categories/laptops.jpg",
-    "created_at": "2024-01-15T10:30:00.000Z",
-    "updated_at": "2024-01-15T10:30:00.000Z"
-  },
-  "products": {
-    "data": [
-      {
+    "category": {
         "id": 1,
-        "name": "MacBook Pro 16",
-        "slug": "macbook-pro-16",
-        "sku": "LAPTOP-MACBP-1",
-        "price": 2499.99,
-        "description": "Powerful laptop for professionals",
-        "image": "/uploads/products/macbook-pro.jpg",
-        "category": {
-          "id": 1,
-          "name": "Laptops"
-        },
-        "options": [
-          {
-            "id": 1,
-            "name": "Processor",
-            "values": [
-              {
+        "name": "Laptops",
+        "slug": "laptops",
+        "description": "High-performance laptops",
+        "image": "/uploads/categories/laptops.jpg",
+        "created_at": "2024-01-15T10:30:00.000Z",
+        "updated_at": "2024-01-15T10:30:00.000Z"
+    },
+    "products": {
+        "data": [
+            {
                 "id": 1,
-                "name": "M3 Pro",
-                "price_adder": 0
-              },
-              {
-                "id": 2,
-                "name": "M3 Max",
-                "price_adder": 500
-              }
-            ]
-          },
-          {
-            "id": 2,
-            "name": "Memory",
-            "values": [
-              {
-                "id": 3,
-                "name": "16GB",
-                "price_adder": 0
-              },
-              {
-                "id": 4,
-                "name": "32GB",
-                "price_adder": 200
-              }
-            ]
-          }
-        ]
-      }
-    ],
-    "meta": {
-      "total": 10,
-      "per_page": 15,
-      "current_page": 1,
-      "last_page": 1,
-      "first_page": 1,
-      "first_page_url": "/?page=1",
-      "last_page_url": "/?page=1",
-      "next_page_url": null,
-      "previous_page_url": null
+                "name": "MacBook Pro 16",
+                "slug": "macbook-pro-16",
+                "sku": "LAPTOP-MACBP-1",
+                "price": 2499.99,
+                "description": "Powerful laptop for professionals",
+                "image": "/uploads/products/macbook-pro.jpg",
+                "category": {
+                    "id": 1,
+                    "name": "Laptops"
+                },
+                "options": [
+                    {
+                        "id": 1,
+                        "name": "Processor",
+                        "values": [
+                            {
+                                "id": 1,
+                                "name": "M3 Pro",
+                                "price_adder": 0
+                            },
+                            {
+                                "id": 2,
+                                "name": "M3 Max",
+                                "price_adder": 500
+                            }
+                        ]
+                    },
+                    {
+                        "id": 2,
+                        "name": "Memory",
+                        "values": [
+                            {
+                                "id": 3,
+                                "name": "16GB",
+                                "price_adder": 0
+                            },
+                            {
+                                "id": 4,
+                                "name": "32GB",
+                                "price_adder": 200
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "meta": {
+            "total": 10,
+            "per_page": 15,
+            "current_page": 1,
+            "last_page": 1,
+            "first_page": 1,
+            "first_page_url": "/?page=1",
+            "last_page_url": "/?page=1",
+            "next_page_url": null,
+            "previous_page_url": null
+        }
     }
-  }
 }
 ```
 
@@ -158,7 +158,7 @@ curl -X GET "http://localhost:3333/api/products/1?page=1&limit=15"
 
 ```json
 {
-  "message": "Category not found"
+    "message": "Category not found"
 }
 ```
 
@@ -174,8 +174,8 @@ Generate a product variant SKU and calculate total price based on selected optio
 
 ```json
 {
-  "product_id": 1,
-  "option_value_ids": [2, 4]
+    "product_id": 1,
+    "option_value_ids": [2, 4]
 }
 ```
 
@@ -213,37 +213,37 @@ curl -X GET "http://localhost:3333/api/configure" \
 
 ```json
 {
-  "sku": "LAPTOP-MACBP-1-M3-MAX-32GB",
-  "total_price": 3199.99,
-  "base_price": 2499.99,
-  "configuration": {
-    "product": {
-      "id": 1,
-      "name": "MacBook Pro 16",
-      "slug": "macbook-pro-16",
-      "base_sku": "LAPTOP-MACBP-1"
-    },
-    "selected_options": [
-      {
-        "option_id": 1,
-        "option_name": "Processor",
-        "option_created_at": "2024-01-15T10:00:00.000Z",
-        "value_id": 2,
-        "value_name": "M3 Max",
-        "price_adder": 500,
-        "sku": "M3-MAX"
-      },
-      {
-        "option_id": 2,
-        "option_name": "Memory",
-        "option_created_at": "2024-01-15T10:05:00.000Z",
-        "value_id": 4,
-        "value_name": "32GB",
-        "price_adder": 200,
-        "sku": "32GB"
-      }
-    ]
-  }
+    "sku": "LAPTOP-MACBP-1-M3-MAX-32GB",
+    "total_price": 3199.99,
+    "base_price": 2499.99,
+    "configuration": {
+        "product": {
+            "id": 1,
+            "name": "MacBook Pro 16",
+            "slug": "macbook-pro-16",
+            "base_sku": "LAPTOP-MACBP-1"
+        },
+        "selected_options": [
+            {
+                "option_id": 1,
+                "option_name": "Processor",
+                "option_created_at": "2024-01-15T10:00:00.000Z",
+                "value_id": 2,
+                "value_name": "M3 Max",
+                "price_adder": 500,
+                "sku": "M3-MAX"
+            },
+            {
+                "option_id": 2,
+                "option_name": "Memory",
+                "option_created_at": "2024-01-15T10:05:00.000Z",
+                "value_id": 4,
+                "value_name": "32GB",
+                "price_adder": 200,
+                "sku": "32GB"
+            }
+        ]
+    }
 }
 ```
 
@@ -261,18 +261,18 @@ curl -X GET "http://localhost:3333/api/configure" \
 
 ```json
 {
-  "sku": "LAPTOP-MACBP-1",
-  "total_price": 2499.99,
-  "base_price": 2499.99,
-  "configuration": {
-    "product": {
-      "id": 1,
-      "name": "MacBook Pro 16",
-      "slug": "macbook-pro-16",
-      "base_sku": "LAPTOP-MACBP-1"
-    },
-    "selected_options": []
-  }
+    "sku": "LAPTOP-MACBP-1",
+    "total_price": 2499.99,
+    "base_price": 2499.99,
+    "configuration": {
+        "product": {
+            "id": 1,
+            "name": "MacBook Pro 16",
+            "slug": "macbook-pro-16",
+            "base_sku": "LAPTOP-MACBP-1"
+        },
+        "selected_options": []
+    }
 }
 ```
 
@@ -282,7 +282,7 @@ curl -X GET "http://localhost:3333/api/configure" \
 
 ```json
 {
-  "message": "Product does not have a base SKU"
+    "message": "Product does not have a base SKU"
 }
 ```
 
@@ -290,8 +290,8 @@ curl -X GET "http://localhost:3333/api/configure" \
 
 ```json
 {
-  "message": "Some selected option values are not valid for this product",
-  "invalid_option_value_ids": [99, 100]
+    "message": "Some selected option values are not valid for this product",
+    "invalid_option_value_ids": [99, 100]
 }
 ```
 
@@ -299,8 +299,8 @@ curl -X GET "http://localhost:3333/api/configure" \
 
 ```json
 {
-  "message": "Cannot select multiple values from the same option",
-  "duplicate_option_ids": [1]
+    "message": "Cannot select multiple values from the same option",
+    "duplicate_option_ids": [1]
 }
 ```
 
@@ -308,7 +308,7 @@ curl -X GET "http://localhost:3333/api/configure" \
 
 ```json
 {
-  "message": "Product not found"
+    "message": "Product not found"
 }
 ```
 

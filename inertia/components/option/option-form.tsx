@@ -18,14 +18,15 @@ export default function OptionForm({ option, categories, onClose }: OptionFormPr
     const form = useForm<{
         name: string
         category_ids: number[]
-        values: Array<{ name: string; price_adder: number | '' }>
+        values: Array<{ id?: number; name: string; price_adder: number | '' }>
     }>({
         name: option?.name || '',
         category_ids: option?.category_ids || [],
         values: option?.values?.map((v) => ({
+            id: v.id,
             name: v.name,
             price_adder: v.price_adder ?? '',
-        })) || [{ name: '', price_adder: '' }],
+        })) || [{ id: undefined, name: '', price_adder: '' }],
     })
 
     const handleCategoryToggle = (categoryId: number) => {
@@ -41,13 +42,13 @@ export default function OptionForm({ option, categories, onClose }: OptionFormPr
     }
 
     const addValue = () => {
-        form.setData('values', [...form.data.values, { name: '', price_adder: '' }])
+        form.setData('values', [...form.data.values, { id: undefined, name: '', price_adder: '' }])
     }
 
     const removeValue = (index: number) => {
         const newValues = form.data.values.filter((_, i) => i !== index)
         if (newValues.length === 0) {
-            form.setData('values', [{ name: '', price_adder: '' }])
+            form.setData('values', [{ id: undefined, name: '', price_adder: '' }])
         } else {
             form.setData('values', newValues)
         }
@@ -77,6 +78,7 @@ export default function OptionForm({ option, categories, onClose }: OptionFormPr
             const filteredValues = form.data.values
                 .filter((v) => v.name.trim() !== '')
                 .map((v) => ({
+                    id: v.id,
                     name: v.name,
                     price_adder: v.price_adder === '' ? 0 : Number(v.price_adder),
                 }))

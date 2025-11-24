@@ -3,6 +3,7 @@ import vine from '@vinejs/vine'
 import Option from '#models/option'
 import OptionValue from '#models/option_value'
 import Category from '#models/category'
+import Product from '#models/product'
 
 const uniqueValueNames = vine.createRule((value, _, field) => {
     if (!Array.isArray(value)) {
@@ -168,6 +169,49 @@ export default class OptionController {
                 const valuesToDelete = existingValues.filter(
                     (v) => !incomingValueIds.has(v.id.toString())
                 )
+
+                if (valuesToDelete.length > 0) {
+                    const valuesToDeleteIds = valuesToDelete.map((v) => v.id)
+
+                    const remainingValueIds = existingValues
+                        .filter((v) => !valuesToDeleteIds.includes(v.id))
+                        .map((v) => v.id)
+
+                    const productsWithDeletedValues = await Product.query()
+                        .whereExists((subquery) => {
+                            subquery
+                                .from('product_option_value')
+                                .whereRaw('product_option_value.product_id = products.id')
+                                .whereIn('product_option_value.option_value_id', valuesToDeleteIds)
+                        })
+                        .preload('options')
+                        .preload('optionValues', (query) => {
+                            query.where('option_id', option.id)
+                        })
+                        .exec()
+
+                    for (const product of productsWithDeletedValues) {
+                        const productOptionValueIds = product.optionValues
+                            .filter((ov) => ov.optionId === option.id)
+                            .map((ov) => ov.id)
+
+                        const productRemainingValues = productOptionValueIds.filter(
+                            (id) => !valuesToDeleteIds.includes(id)
+                        )
+
+                        const hasRemainingValues = productRemainingValues.some((id) =>
+                            remainingValueIds.includes(id)
+                        )
+
+                        if (!hasRemainingValues) {
+                            const hasOption = product.options.some((o) => o.id === option.id)
+                            if (hasOption) {
+                                await product.related('options').detach([option.id])
+                            }
+                        }
+                    }
+                }
+
                 await Promise.all(valuesToDelete.map((v) => v.delete()))
 
                 for (const valueData of data.values) {
