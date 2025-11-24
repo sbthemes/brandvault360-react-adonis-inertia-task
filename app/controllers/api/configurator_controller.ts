@@ -13,7 +13,7 @@ export default class ConfiguratorController {
         return categories
     }
 
-    async getProductsByCategory({ params }: HttpContext) {
+    async getProductsByCategory({ params, response }: HttpContext) {
         const {
             categoryId,
             page = 1,
@@ -21,14 +21,19 @@ export default class ConfiguratorController {
         } = await vine
             .compile(
                 vine.object({
-                    categoryId: vine.number().exists({ table: 'categories', column: 'id' }),
+                    categoryId: vine.number(),
                     page: vine.number().min(1).optional(),
                     limit: vine.number().min(1).max(100).optional(),
                 })
             )
             .validate(params)
 
-        const category = await Category.findOrFail(categoryId)
+        const category = await Category.find(categoryId)
+        if (!category) {
+            return response.notFound({
+                message: 'Category not found',
+            })
+        }
 
         const products = await Product.query()
             .where('category_id', categoryId)
@@ -85,13 +90,18 @@ export default class ConfiguratorController {
         const data = await request.validateUsing(
             vine.compile(
                 vine.object({
-                    product_id: vine.number().exists({ table: 'products', column: 'id' }),
+                    product_id: vine.number(),
                     option_value_ids: vine.array(vine.number()).optional(),
                 })
             )
         )
 
-        const product = await Product.findOrFail(data.product_id)
+        const product = await Product.find(data.product_id)
+        if (!product) {
+            return response.notFound({
+                message: 'Product not found',
+            })
+        }
         await product.load('category')
         await product.load('options', (query) => {
             query.preload('values')
