@@ -6,16 +6,16 @@ import Button from '~/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import { Pencil, Trash2, Search } from 'lucide-react'
 import Pagination from '~/components/ui/pagination'
-import type { Category } from '~/types/category'
+import type { Product } from '~/types/product'
 import type { PaginatedResponse } from '~/types/pagination'
 
-interface CategoryTableProps {
-    categories: PaginatedResponse<Category>
-    onEdit: (category: Category) => void
-    onDelete: (category: Category) => void
+interface ProductTableProps {
+    products: PaginatedResponse<Product>
+    onEdit: (product: Product) => void
+    onDelete: (product: Product) => void
 }
 
-export default function CategoryTable({ categories, onEdit, onDelete }: CategoryTableProps) {
+export default function ProductTable({ products, onEdit, onDelete }: ProductTableProps) {
     const [search, setSearch] = useState('')
     const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null)
 
@@ -28,7 +28,7 @@ export default function CategoryTable({ categories, onEdit, onDelete }: Category
 
         const timeout = setTimeout(() => {
             router.get(
-                '/categories',
+                '/products',
                 { search: value, page: 1 },
                 {
                     preserveState: true,
@@ -50,13 +50,20 @@ export default function CategoryTable({ categories, onEdit, onDelete }: Category
 
     const handlePageChange = (page: number) => {
         router.get(
-            '/categories',
+            '/products',
             { page, search },
             {
                 preserveState: true,
                 preserveScroll: false,
             }
         )
+    }
+
+    const formatPrice = (price: number) => {
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+        }).format(price)
     }
 
     return (
@@ -68,7 +75,7 @@ export default function CategoryTable({ categories, onEdit, onDelete }: Category
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                         <Input
                             type="text"
-                            placeholder="Search categories..."
+                            placeholder="Search products..."
                             value={search}
                             onChange={(e) => handleSearch(e.target.value)}
                             className="pl-10"
@@ -77,9 +84,9 @@ export default function CategoryTable({ categories, onEdit, onDelete }: Category
                 </div>
             </CardHeader>
             <CardContent>
-                {categories.data.length === 0 ? (
+                {products.data.length === 0 ? (
                     <div className="text-center py-12 text-gray-500">
-                        <p>No categories found</p>
+                        <p>No products found</p>
                     </div>
                 ) : (
                     <>
@@ -90,20 +97,21 @@ export default function CategoryTable({ categories, onEdit, onDelete }: Category
                                         <Table.ColumnHeaderCell>Image</Table.ColumnHeaderCell>
                                         <Table.ColumnHeaderCell>Name</Table.ColumnHeaderCell>
                                         <Table.ColumnHeaderCell>Slug</Table.ColumnHeaderCell>
-                                        <Table.ColumnHeaderCell>Description</Table.ColumnHeaderCell>
+                                        <Table.ColumnHeaderCell>Category</Table.ColumnHeaderCell>
+                                        <Table.ColumnHeaderCell>Base Price</Table.ColumnHeaderCell>
                                         <Table.ColumnHeaderCell justify="end">
                                             Actions
                                         </Table.ColumnHeaderCell>
                                     </Table.Row>
                                 </Table.Header>
                                 <Table.Body>
-                                    {categories.data.map((category) => (
-                                        <Table.Row key={category.id}>
+                                    {products.data.map((product) => (
+                                        <Table.Row key={product.id}>
                                             <Table.Cell>
-                                                {category.image ? (
+                                                {product.image ? (
                                                     <img
-                                                        src={category.image}
-                                                        alt={category.name}
+                                                        src={product.image}
+                                                        alt={product.name}
                                                         className="h-12 w-12 object-cover rounded"
                                                         onError={(e) => {
                                                             e.currentTarget.style.display = 'none'
@@ -116,20 +124,21 @@ export default function CategoryTable({ categories, onEdit, onDelete }: Category
                                                 )}
                                             </Table.Cell>
                                             <Table.Cell>
-                                                <div className="font-medium">{category.name}</div>
+                                                <div className="font-medium">{product.name}</div>
                                             </Table.Cell>
                                             <Table.Cell>
                                                 <div className="text-sm text-gray-600">
-                                                    {category.slug}
+                                                    {product.slug}
                                                 </div>
                                             </Table.Cell>
                                             <Table.Cell>
-                                                <div className="text-sm max-w-md truncate">
-                                                    {category.description || (
-                                                        <span className="text-gray-400 italic">
-                                                            No description
-                                                        </span>
-                                                    )}
+                                                <div className="text-sm">
+                                                    {product.category?.name || 'N/A'}
+                                                </div>
+                                            </Table.Cell>
+                                            <Table.Cell>
+                                                <div className="text-sm font-medium">
+                                                    {formatPrice(Number(product.base_price))}
                                                 </div>
                                             </Table.Cell>
                                             <Table.Cell justify="end">
@@ -137,14 +146,14 @@ export default function CategoryTable({ categories, onEdit, onDelete }: Category
                                                     <Button
                                                         variant="secondary"
                                                         size="sm"
-                                                        onClick={() => onEdit(category)}
+                                                        onClick={() => onEdit(product)}
                                                     >
                                                         <Pencil className="h-4 w-4" />
                                                     </Button>
                                                     <Button
                                                         variant="danger"
                                                         size="sm"
-                                                        onClick={() => onDelete(category)}
+                                                        onClick={() => onDelete(product)}
                                                     >
                                                         <Trash2 className="h-4 w-4" />
                                                     </Button>
@@ -157,8 +166,8 @@ export default function CategoryTable({ categories, onEdit, onDelete }: Category
                         </div>
 
                         <Pagination
-                            currentPage={categories.meta?.current_page || 1}
-                            lastPage={categories.meta?.last_page || 1}
+                            currentPage={products.meta?.current_page || 1}
+                            lastPage={products.meta?.last_page || 1}
                             onPageChange={handlePageChange}
                         />
                     </>

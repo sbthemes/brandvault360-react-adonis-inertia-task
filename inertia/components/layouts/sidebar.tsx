@@ -14,7 +14,7 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ items }: SidebarProps) {
-    const user = usePage().props.user as { email: string; fullName: string }
+    const user = usePage().props.user as { email: string; fullName: string | null } | null
     const currentUrl = usePage().url
     const handleLogout = () => {
         router.post('/logout')
@@ -54,22 +54,24 @@ export default function Sidebar({ items }: SidebarProps) {
                 })}
             </nav>
 
-            <div className="border-t border-gray-200 p-4">
-                <div className="mb-4 space-y-2 px-3">
-                    <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        {user.fullName}
+            {user && (
+                <div className="border-t border-gray-200 p-4">
+                    <div className="mb-4 space-y-2 px-3">
+                        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            {user.fullName || 'Admin User'}
+                        </div>
+                        <div className="text-sm text-gray-700">{user.email}</div>
                     </div>
-                    <div className="text-sm text-gray-700">{user.email}</div>
+                    <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={handleLogout}
+                        className="w-full hover:bg-red-400 hover:border-red-400 hover:text-white"
+                    >
+                        Logout
+                    </Button>
                 </div>
-                <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={handleLogout}
-                    className="w-full hover:bg-red-400 hover:border-red-400 hover:text-white"
-                >
-                    Logout
-                </Button>
-            </div>
+            )}
         </div>
     )
 }

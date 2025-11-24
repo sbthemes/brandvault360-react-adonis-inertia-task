@@ -2,24 +2,29 @@ import * as React from 'react'
 import { useForm } from '@inertiajs/react'
 import * as Form from '@radix-ui/react-form'
 import RadixFormField from '~/components/ui/radix-form-field'
+import RadixFormFieldSelect from '~/components/ui/radix-form-field-select'
 import Button from '~/components/ui/button'
 import { Checkbox } from '~/components/ui/checkbox'
-import type { CategoryFormData } from '~/types/category'
+import type { ProductFormData } from '~/types/product'
+import type { CategoryListItem } from '~/types/category'
 
-interface CategoryFormProps {
-    category?: CategoryFormData
+interface ProductFormProps {
+    product?: ProductFormData
+    categories: CategoryListItem[]
     onClose: () => void
 }
 
-export default function CategoryForm({ category, onClose }: CategoryFormProps) {
-    const [autoGenerateSlug, setAutoGenerateSlug] = React.useState(!category)
-    const [imagePreview, setImagePreview] = React.useState<string | null>(category?.image || null)
+export default function ProductForm({ product, categories, onClose }: ProductFormProps) {
+    const [autoGenerateSlug, setAutoGenerateSlug] = React.useState(!product)
+    const [imagePreview, setImagePreview] = React.useState<string | null>(product?.image || null)
     const [isDragging, setIsDragging] = React.useState(false)
 
     const form = useForm({
-        name: category?.name || '',
-        slug: category?.slug || '',
-        description: category?.description || '',
+        name: product?.name || '',
+        slug: product?.slug || '',
+        category_id: product?.category_id || '',
+        description: product?.description || '',
+        base_price: product?.base_price || 0,
         image: null as File | null,
     })
 
@@ -79,8 +84,8 @@ export default function CategoryForm({ category, onClose }: CategoryFormProps) {
         (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault()
 
-            if (category) {
-                form.post(`/categories/${category.id}`, {
+            if (product) {
+                form.post(`/products/${product.id}`, {
                     preserveScroll: true,
                     forceFormData: true,
                     onSuccess: () => {
@@ -88,7 +93,7 @@ export default function CategoryForm({ category, onClose }: CategoryFormProps) {
                     },
                 })
             } else {
-                form.post('/categories', {
+                form.post('/products', {
                     preserveScroll: true,
                     forceFormData: true,
                     onSuccess: () => {
@@ -97,7 +102,7 @@ export default function CategoryForm({ category, onClose }: CategoryFormProps) {
                 })
             }
         },
-        [form, category, onClose]
+        [form, product, onClose]
     )
 
     const handleClearServerErrors = React.useCallback(() => {
@@ -124,7 +129,7 @@ export default function CategoryForm({ category, onClose }: CategoryFormProps) {
                 error={form.errors.name}
                 serverInvalid={!!form.errors.name}
                 required
-                placeholder="Enter category name"
+                placeholder="Enter product name"
             />
 
             <RadixFormField
@@ -142,7 +147,7 @@ export default function CategoryForm({ category, onClose }: CategoryFormProps) {
                 error={form.errors.slug}
                 serverInvalid={!!form.errors.slug}
                 required
-                placeholder="Enter category slug"
+                placeholder="Enter product slug"
                 labelComponent={
                     <label className="flex items-center space-x-2 text-xs text-gray-500 cursor-pointer">
                         <Checkbox
@@ -153,6 +158,44 @@ export default function CategoryForm({ category, onClose }: CategoryFormProps) {
                     </label>
                 }
             />
+
+            <div className="grid grid-cols-2 gap-4">
+                <RadixFormFieldSelect
+                    label="Category"
+                    name="category_id"
+                    value={form.data.category_id}
+                    onValueChange={(value) => {
+                        form.setData('category_id', Number(value))
+                        if (form.errors.category_id) {
+                            form.clearErrors('category_id')
+                        }
+                    }}
+                    options={categories}
+                    error={form.errors.category_id}
+                    serverInvalid={!!form.errors.category_id}
+                    required
+                    placeholder="Select a category"
+                />
+
+                <RadixFormField
+                    label="Base Price"
+                    name="base_price"
+                    type="number"
+                    value={form.data.base_price}
+                    onChange={(e) => {
+                        form.setData('base_price', parseFloat(e.target.value) || 0)
+                        if (form.errors.base_price) {
+                            form.clearErrors('base_price')
+                        }
+                    }}
+                    error={form.errors.base_price}
+                    serverInvalid={!!form.errors.base_price}
+                    required
+                    placeholder="0.00"
+                    step="0.01"
+                    min="0"
+                />
+            </div>
 
             <RadixFormField
                 label="Description"
@@ -167,7 +210,7 @@ export default function CategoryForm({ category, onClose }: CategoryFormProps) {
                 }}
                 error={form.errors.description}
                 serverInvalid={!!form.errors.description}
-                placeholder="Enter category description"
+                placeholder="Enter product description"
                 rows={4}
             />
 
@@ -287,7 +330,7 @@ export default function CategoryForm({ category, onClose }: CategoryFormProps) {
                 </Button>
                 <Form.Submit asChild>
                     <Button type="submit" disabled={form.processing}>
-                        {form.processing ? 'Saving...' : category ? 'Update' : 'Create'}
+                        {form.processing ? 'Saving...' : product ? 'Update' : 'Create'}
                     </Button>
                 </Form.Submit>
             </div>

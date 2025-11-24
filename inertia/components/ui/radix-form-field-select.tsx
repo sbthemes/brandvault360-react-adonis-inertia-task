@@ -1,47 +1,42 @@
 import * as React from 'react'
 import * as Form from '@radix-ui/react-form'
-import Input from './input'
-import PasswordToggleField from './password-toggle-field'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select'
 import { cn } from '~/lib/utils'
 
-interface RadixFormFieldProps {
+interface SelectOption {
+    id: number | string
+    name: string
+}
+
+interface RadixFormFieldSelectProps {
     id?: string
     label?: string
     name: string
-    type?: string
     value: string | number
-    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+    onValueChange: (value: string) => void
+    options: SelectOption[]
     error?: string | string[]
     required?: boolean
     placeholder?: string
-    autoComplete?: string
     showLabel?: boolean
     serverInvalid?: boolean
-    rows?: number
-    step?: string
-    min?: string
     labelComponent?: React.ReactNode
 }
 
-export default function RadixFormField({
+export default function RadixFormFieldSelect({
     id,
     label,
     name,
-    type = 'text',
     value,
-    onChange,
+    onValueChange,
+    options,
     error,
     required = false,
     placeholder,
-    autoComplete,
     showLabel = true,
     serverInvalid = false,
-    rows,
-    step,
-    min,
     labelComponent,
-}: RadixFormFieldProps) {
-    const InputComponent = type === 'password' ? PasswordToggleField : Input
+}: RadixFormFieldSelectProps) {
     const errorMessage = Array.isArray(error) ? error[0] : error
 
     const getMatchType = React.useCallback(() => {
@@ -62,8 +57,6 @@ export default function RadixFormField({
 
     const matchType = getMatchType()
 
-    const isTextarea = type === 'textarea'
-
     return (
         <Form.Field name={name} serverInvalid={serverInvalid} className="space-y-2">
             <div className="flex items-center justify-between">
@@ -81,49 +74,25 @@ export default function RadixFormField({
                 )}
                 {labelComponent}
             </div>
-            {isTextarea ? (
-                <Form.Control asChild>
-                    <textarea
-                        name={name}
-                        value={value}
-                        onChange={onChange}
-                        required={required}
-                        placeholder={placeholder || `Enter your ${label.toLowerCase()}`}
-                        rows={rows || 4}
-                        className={cn(
-                            'flex w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:cursor-not-allowed disabled:opacity-50',
-                            errorMessage && 'border-red-300 focus:border-red-500 focus:ring-red-500'
-                        )}
+            <Select value={String(value)} onValueChange={onValueChange}>
+                <SelectTrigger
+                    id={id || name}
+                    className={cn(
+                        errorMessage && 'border-red-300 focus:border-red-500 focus:ring-red-500'
+                    )}
+                >
+                    <SelectValue
+                        placeholder={placeholder || `Select ${label?.toLowerCase() || 'an option'}`}
                     />
-                </Form.Control>
-            ) : type === 'password' ? (
-                <PasswordToggleField
-                    name={name}
-                    value={String(value)}
-                    onChange={onChange}
-                    required={required}
-                    placeholder={placeholder || `Enter your ${label.toLowerCase()}`}
-                    autoComplete={autoComplete}
-                    className="rounded-md"
-                    error={error}
-                />
-            ) : (
-                <Form.Control asChild>
-                    <InputComponent
-                        id={id}
-                        type={type}
-                        name={name}
-                        value={value}
-                        onChange={onChange}
-                        required={required}
-                        placeholder={placeholder || `Enter your ${label.toLowerCase()}`}
-                        autoComplete={autoComplete}
-                        className="rounded-md"
-                        step={step}
-                        min={min}
-                    />
-                </Form.Control>
-            )}
+                </SelectTrigger>
+                <SelectContent>
+                    {options.map((option) => (
+                        <SelectItem key={option.id} value={String(option.id)}>
+                            {option.name}
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
             {errorMessage && matchType === 'valueMissing' && (
                 <Form.Message
                     match="valueMissing"

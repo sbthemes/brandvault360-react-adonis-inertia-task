@@ -1,5 +1,8 @@
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
+import { BaseModel, SnakeCaseNamingStrategy } from '@adonisjs/lucid/orm'
+
+BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
 router.group(() => {
     router
@@ -13,7 +16,18 @@ router.group(() => {
 router
     .group(() => {
         router.get('/', '#controllers/admin/dashboard_controller.index').as('dashboard')
-        router.get('/products', '#controllers/admin/product_controller.index').as('product')
+
+        router.get('/products', '#controllers/admin/product_controller.index').as('products.index')
+        router.post('/products', '#controllers/admin/product_controller.store').as('products.store')
+        router
+            .get('/products/:id', '#controllers/admin/product_controller.show')
+            .as('products.show')
+        router
+            .post('/products/:id', '#controllers/admin/product_controller.update')
+            .as('products.update')
+        router
+            .delete('/products/:id', '#controllers/admin/product_controller.destroy')
+            .as('products.destroy')
 
         router
             .get('/categories', '#controllers/admin/category_controller.index')
@@ -25,11 +39,8 @@ router
             .get('/categories/:id', '#controllers/admin/category_controller.show')
             .as('categories.show')
         router
-            .put('/categories/:id', '#controllers/admin/category_controller.update')
-            .as('categories.update')
-        router
             .post('/categories/:id', '#controllers/admin/category_controller.update')
-            .as('categories.update.post')
+            .as('categories.update')
         router
             .delete('/categories/:id', '#controllers/admin/category_controller.destroy')
             .as('categories.destroy')

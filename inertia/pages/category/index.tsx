@@ -12,34 +12,7 @@ import {
     DialogTitle,
     DialogDescription,
 } from '~/components/ui/dialog'
-
-interface Category {
-    id: number
-    name: string
-    slug: string
-    description: string | null
-    image: string | null
-    created_at: string
-    updated_at: string | null
-}
-
-interface CategoryPageProps {
-    categories: {
-        data: Category[]
-        meta: {
-            total: number
-            perPage: number
-            currentPage: number
-            lastPage: number
-            firstPage: number
-            firstPageUrl: string
-            lastPageUrl: string
-            nextPageUrl: string | null
-            previousPageUrl: string | null
-        }
-    }
-    [key: string]: any
-}
+import type { Category, CategoryPageProps } from '~/types/category'
 
 export default function CategoryIndex({ categories }: CategoryPageProps) {
     const [isCreateDialogOpen, setIsCreateDialogOpen] = React.useState(false)
@@ -72,14 +45,14 @@ export default function CategoryIndex({ categories }: CategoryPageProps) {
         data: [],
         meta: {
             total: 0,
-            perPage: 15,
-            currentPage: 1,
-            lastPage: 1,
-            firstPage: 1,
-            firstPageUrl: '/?page=1',
-            lastPageUrl: '/?page=1',
-            nextPageUrl: null,
-            previousPageUrl: null,
+            per_page: 15,
+            current_page: 1,
+            last_page: 1,
+            first_page: 1,
+            first_page_url: '/?page=1',
+            last_page_url: '/?page=1',
+            next_page_url: null,
+            previous_page_url: null,
         },
     }
 
