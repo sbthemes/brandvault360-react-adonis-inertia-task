@@ -1,8 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import app from '@adonisjs/core/services/app'
-import vine from '@vinejs/vine'
+import vine, { SimpleMessagesProvider } from '@vinejs/vine'
 import Category from '#models/category'
-import { generateSlug, generateUniqueSlug } from '../../utils/slug_helper.js'
 import { unlink } from 'node:fs/promises'
 
 export default class CategoryController {
@@ -41,11 +40,22 @@ export default class CategoryController {
     }
 
     async store({ request, response, session }: HttpContext) {
+        const uniqueSlugRule = vine.createRule(async (value: unknown, _: any, field: any) => {
+            if (!value || typeof value !== 'string') {
+                return
+            }
+
+            const existing = await Category.query().where('slug', value).first()
+            if (existing) {
+                field.report('The slug has already been taken', 'uniqueCategorySlug', field)
+            }
+        })
+
         const data = await request.validateUsing(
             vine.compile(
                 vine.object({
                     name: vine.string().minLength(1).maxLength(255),
-                    slug: vine.string().maxLength(255).trim().optional(),
+                    slug: vine.string().maxLength(255).trim().use(uniqueSlugRule()),
                     description: vine.string().optional(),
                     image: vine
                         .file({
@@ -54,27 +64,20 @@ export default class CategoryController {
                         })
                         .optional(),
                 })
-            )
-        )
-
-        let slug = data.slug || generateSlug(data.name)
-
-        const checkUnique = async (slugToCheck: string, excludeId?: number) => {
-            const query = Category.query().where('slug', slugToCheck)
-            if (excludeId) {
-                query.whereNot('id', excludeId)
+            ),
+            {
+                messagesProvider: new SimpleMessagesProvider({
+                    'required': 'The {{ field }} field is required.',
+                    'slug.uniqueCategorySlug': 'The slug has already been taken.',
+                }),
             }
-            const exists = await query.first()
-            return !!exists
-        }
-
-        slug = await generateUniqueSlug(slug, checkUnique)
+        )
 
         let imagePath: string | null = null
 
         if (data.image) {
             const uploadsDir = app.publicPath('uploads/categories')
-            const fileName = `${slug}-${Date.now()}.${data.image.extname}`
+            const fileName = `${data.slug}-${Date.now()}.${data.image.extname}`
             imagePath = `/uploads/categories/${fileName}`
 
             try {
@@ -91,7 +94,7 @@ export default class CategoryController {
         try {
             await Category.create({
                 name: data.name,
-                slug,
+                slug: data.slug,
                 description: data.description || null,
                 image: imagePath,
             })
@@ -130,11 +133,25 @@ export default class CategoryController {
     async update({ params, request, response, session }: HttpContext) {
         const category = await Category.findOrFail(params.id)
 
+        const uniqueSlugRule = vine.createRule(async (value: unknown, _: any, field: any) => {
+            if (!value || typeof value !== 'string') {
+                return
+            }
+
+            const existing = await Category.query()
+                .where('slug', value)
+                .whereNot('id', category.id)
+                .first()
+            if (existing) {
+                field.report('The slug has already been taken', 'uniqueCategorySlug', field)
+            }
+        })
+
         const data = await request.validateUsing(
             vine.compile(
                 vine.object({
                     name: vine.string().minLength(1).maxLength(255),
-                    slug: vine.string().maxLength(255).trim().optional(),
+                    slug: vine.string().maxLength(255).trim().use(uniqueSlugRule()),
                     description: vine.string().optional(),
                     image: vine
                         .file({
@@ -143,42 +160,20 @@ export default class CategoryController {
                         })
                         .optional(),
                 })
-            )
+            ),
+            {
+                messagesProvider: new SimpleMessagesProvider({
+                    'required': 'The {{ field }} field is required.',
+                    'slug.uniqueCategorySlug': 'The slug has already been taken.',
+                }),
+            }
         )
-
-        let slug = category.slug
-
-        if (data.name && data.name !== category.name) {
-            slug = data.slug || generateSlug(data.name)
-
-            const checkUnique = async (slugToCheck: string, excludeId?: number) => {
-                const query = Category.query().where('slug', slugToCheck)
-                if (excludeId) {
-                    query.whereNot('id', excludeId)
-                }
-                const exists = await query.first()
-                return !!exists
-            }
-
-            slug = await generateUniqueSlug(slug, checkUnique, category.id)
-        } else if (data.slug && data.slug !== category.slug) {
-            const checkUnique = async (slugToCheck: string, excludeId?: number) => {
-                const query = Category.query().where('slug', slugToCheck)
-                if (excludeId) {
-                    query.whereNot('id', excludeId)
-                }
-                const exists = await query.first()
-                return !!exists
-            }
-
-            slug = await generateUniqueSlug(data.slug, checkUnique, category.id)
-        }
 
         let imagePath: string | null = category.image
 
         if (data.image) {
             const uploadsDir = app.publicPath('uploads/categories')
-            const fileName = `${slug}-${Date.now()}.${data.image.extname}`
+            const fileName = `${data.slug}-${Date.now()}.${data.image.extname}`
             imagePath = `/uploads/categories/${fileName}`
 
             try {
@@ -203,7 +198,7 @@ export default class CategoryController {
         try {
             category.merge({
                 name: data.name || category.name,
-                slug,
+                slug: data.slug || category.slug,
                 description:
                     data.description !== undefined ? data.description : category.description,
                 image: imagePath,

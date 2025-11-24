@@ -4,7 +4,6 @@ import vine, { SimpleMessagesProvider } from '@vinejs/vine'
 import Product from '#models/product'
 import Category from '#models/category'
 import Option from '#models/option'
-import { generateSlug, generateUniqueSlug } from '../../utils/slug_helper.js'
 import { generateBaseSku, ensureUniqueSku } from '../../utils/sku_helper.js'
 import { unlink } from 'node:fs/promises'
 
@@ -66,11 +65,22 @@ export default class ProductController {
     }
 
     async store({ request, response, session }: HttpContext) {
+        const uniqueSlugRule = vine.createRule(async (value: unknown, _: any, field: any) => {
+            if (!value || typeof value !== 'string') {
+                return
+            }
+
+            const existing = await Product.query().where('slug', value).first()
+            if (existing) {
+                field.report('The slug has already been taken', 'uniqueProductSlug', field)
+            }
+        })
+
         const data = await request.validateUsing(
             vine.compile(
                 vine.object({
                     name: vine.string().minLength(1).maxLength(255),
-                    slug: vine.string().maxLength(255).trim().optional(),
+                    slug: vine.string().maxLength(255).trim().use(uniqueSlugRule()),
                     sku: vine.string().maxLength(255).trim().optional(),
                     category_id: vine.number().exists({ table: 'categories', column: 'id' }),
                     description: vine.string().optional(),
@@ -89,6 +99,7 @@ export default class ProductController {
                 messagesProvider: new SimpleMessagesProvider({
                     'required': 'The {{ field }} field is required.',
                     'category_id.required': 'The category field is required.',
+                    'slug.uniqueProductSlug': 'The slug has already been taken.',
                 }),
             }
         )
@@ -147,24 +158,11 @@ export default class ProductController {
             }
         }
 
-        let slug = data.slug || generateSlug(data.name)
-
-        const checkUnique = async (slugToCheck: string, excludeId?: number) => {
-            const query = Product.query().where('slug', slugToCheck)
-            if (excludeId) {
-                query.whereNot('id', excludeId)
-            }
-            const exists = await query.first()
-            return !!exists
-        }
-
-        slug = await generateUniqueSlug(slug, checkUnique)
-
         let imagePath: string | null = null
 
         if (data.image) {
             const uploadsDir = app.publicPath('uploads/products')
-            const fileName = `${slug}-${Date.now()}.${data.image.extname}`
+            const fileName = `${data.slug}-${Date.now()}.${data.image.extname}`
             imagePath = `/uploads/products/${fileName}`
 
             try {
@@ -184,7 +182,7 @@ export default class ProductController {
 
             const product = await Product.create({
                 name: data.name,
-                slug,
+                slug: data.slug,
                 sku: null,
                 categoryId: data.category_id,
                 description: data.description || null,
@@ -283,11 +281,25 @@ export default class ProductController {
     async update({ params, request, response, session }: HttpContext) {
         const product = await Product.findOrFail(params.id)
 
+        const uniqueSlugRule = vine.createRule(async (value: unknown, _: any, field: any) => {
+            if (!value || typeof value !== 'string') {
+                return
+            }
+
+            const existing = await Product.query()
+                .where('slug', value)
+                .whereNot('id', product.id)
+                .first()
+            if (existing) {
+                field.report('The slug has already been taken', 'uniqueProductSlug', field)
+            }
+        })
+
         const data = await request.validateUsing(
             vine.compile(
                 vine.object({
                     name: vine.string().minLength(1).maxLength(255),
-                    slug: vine.string().maxLength(255).trim().optional(),
+                    slug: vine.string().maxLength(255).trim().use(uniqueSlugRule()),
                     sku: vine.string().maxLength(255).trim().optional(),
                     category_id: vine.number().exists({ table: 'categories', column: 'id' }),
                     description: vine.string().optional(),
@@ -306,6 +318,7 @@ export default class ProductController {
                 messagesProvider: new SimpleMessagesProvider({
                     'required': 'The {{ field }} field is required.',
                     'category_id.required': 'The category field is required.',
+                    'slug.uniqueProductSlug': 'The slug has already been taken.',
                 }),
             }
         )
@@ -360,39 +373,11 @@ export default class ProductController {
             }
         }
 
-        let slug = product.slug
-
-        if (data.name && data.name !== product.name) {
-            slug = data.slug || generateSlug(data.name)
-
-            const checkUnique = async (slugToCheck: string, excludeId?: number) => {
-                const query = Product.query().where('slug', slugToCheck)
-                if (excludeId) {
-                    query.whereNot('id', excludeId)
-                }
-                const exists = await query.first()
-                return !!exists
-            }
-
-            slug = await generateUniqueSlug(slug, checkUnique, product.id)
-        } else if (data.slug && data.slug !== product.slug) {
-            const checkUnique = async (slugToCheck: string, excludeId?: number) => {
-                const query = Product.query().where('slug', slugToCheck)
-                if (excludeId) {
-                    query.whereNot('id', excludeId)
-                }
-                const exists = await query.first()
-                return !!exists
-            }
-
-            slug = await generateUniqueSlug(data.slug, checkUnique, product.id)
-        }
-
         let imagePath: string | null = product.image
 
         if (data.image) {
             const uploadsDir = app.publicPath('uploads/products')
-            const fileName = `${slug}-${Date.now()}.${data.image.extname}`
+            const fileName = `${data.slug}-${Date.now()}.${data.image.extname}`
             imagePath = `/uploads/products/${fileName}`
 
             try {
@@ -431,7 +416,7 @@ export default class ProductController {
 
             product.merge({
                 name: data.name || product.name,
-                slug,
+                slug: data.slug || product.slug,
                 sku,
                 categoryId: data.category_id !== undefined ? data.category_id : product.categoryId,
                 description:
