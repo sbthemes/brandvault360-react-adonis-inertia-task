@@ -1,7 +1,8 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, belongsTo } from '@adonisjs/lucid/orm'
-import type { BelongsTo } from '@adonisjs/lucid/types/relations'
+import { BaseModel, column, belongsTo, manyToMany } from '@adonisjs/lucid/orm'
+import type { BelongsTo, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Option from './option.js'
+import Product from './product.js'
 
 export default class OptionValue extends BaseModel {
     @column({ isPrimary: true })
@@ -24,4 +25,11 @@ export default class OptionValue extends BaseModel {
 
     @belongsTo(() => Option)
     declare option: BelongsTo<typeof Option>
+
+    @manyToMany(() => Product, {
+        pivotTable: 'product_option_value',
+        pivotForeignKey: 'option_value_id',
+        pivotRelatedForeignKey: 'product_id',
+    })
+    declare products: ManyToMany<typeof Product>
 }

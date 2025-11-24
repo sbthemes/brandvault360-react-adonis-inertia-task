@@ -3,6 +3,7 @@ import { BaseModel, column, hasMany, manyToMany } from '@adonisjs/lucid/orm'
 import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import OptionValue from './option_value.js'
 import Category from './category.js'
+import Product from './product.js'
 
 export default class Option extends BaseModel {
     @column({ isPrimary: true })
@@ -26,4 +27,11 @@ export default class Option extends BaseModel {
         pivotRelatedForeignKey: 'category_id',
     })
     declare categories: ManyToMany<typeof Category>
+
+    @manyToMany(() => Product, {
+        pivotTable: 'product_option',
+        pivotForeignKey: 'option_id',
+        pivotRelatedForeignKey: 'product_id',
+    })
+    declare products: ManyToMany<typeof Product>
 }

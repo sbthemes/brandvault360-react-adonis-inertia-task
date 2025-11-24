@@ -18,6 +18,9 @@ router
         router.get('/', '#controllers/admin/dashboard_controller.index').as('dashboard')
 
         router.get('/products', '#controllers/admin/product_controller.index').as('products.index')
+        router
+            .get('/products/create', '#controllers/admin/product_controller.create')
+            .as('products.create')
         router.post('/products', '#controllers/admin/product_controller.store').as('products.store')
         router
             .get('/products/:id', '#controllers/admin/product_controller.show')
@@ -28,6 +31,12 @@ router
         router
             .delete('/products/:id', '#controllers/admin/product_controller.destroy')
             .as('products.destroy')
+        router
+            .get(
+                '/products/options/:categoryId',
+                '#controllers/admin/product_controller.getOptions'
+            )
+            .as('products.options')
 
         router
             .get('/categories', '#controllers/admin/category_controller.index')

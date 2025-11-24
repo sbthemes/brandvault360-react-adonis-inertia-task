@@ -110,7 +110,7 @@ export default function CategoryTable({ categories, onEdit, onDelete }: Category
                                                         }}
                                                     />
                                                 ) : (
-                                                    <div className="h-12 w-12 bg-gray-200 rounded flex items-center justify-center text-gray-400 text-xs">
+                                                    <div className="h-12 w-12 bg-gray-200 rounded flex items-center justify-center text-gray-400 text-xs text-center">
                                                         No Image
                                                     </div>
                                                 )}

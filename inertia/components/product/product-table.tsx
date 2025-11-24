@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { router } from '@inertiajs/react'
+import { Link, router } from '@inertiajs/react'
 import { Table } from '@radix-ui/themes'
 import Input from '~/components/ui/input'
 import Button from '~/components/ui/button'
@@ -11,11 +11,10 @@ import type { PaginatedResponse } from '~/types/pagination'
 
 interface ProductTableProps {
     products: PaginatedResponse<Product>
-    onEdit: (product: Product) => void
     onDelete: (product: Product) => void
 }
 
-export default function ProductTable({ products, onEdit, onDelete }: ProductTableProps) {
+export default function ProductTable({ products, onDelete }: ProductTableProps) {
     const [search, setSearch] = useState('')
     const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null)
 
@@ -40,14 +39,6 @@ export default function ProductTable({ products, onEdit, onDelete }: ProductTabl
         setSearchTimeout(timeout)
     }
 
-    useEffect(() => {
-        return () => {
-            if (searchTimeout) {
-                clearTimeout(searchTimeout)
-            }
-        }
-    }, [searchTimeout])
-
     const handlePageChange = (page: number) => {
         router.get(
             '/products',
@@ -65,6 +56,14 @@ export default function ProductTable({ products, onEdit, onDelete }: ProductTabl
             currency: 'USD',
         }).format(price)
     }
+
+    useEffect(() => {
+        return () => {
+            if (searchTimeout) {
+                clearTimeout(searchTimeout)
+            }
+        }
+    }, [searchTimeout])
 
     return (
         <Card>
@@ -118,7 +117,7 @@ export default function ProductTable({ products, onEdit, onDelete }: ProductTabl
                                                         }}
                                                     />
                                                 ) : (
-                                                    <div className="h-12 w-12 bg-gray-200 rounded flex items-center justify-center text-gray-400 text-xs">
+                                                    <div className="h-12 w-12 bg-gray-200 rounded flex items-center justify-center text-gray-400 text-xs text-center">
                                                         No Image
                                                     </div>
                                                 )}
@@ -143,12 +142,10 @@ export default function ProductTable({ products, onEdit, onDelete }: ProductTabl
                                             </Table.Cell>
                                             <Table.Cell justify="end">
                                                 <div className="flex justify-end space-x-2">
-                                                    <Button
-                                                        variant="secondary"
-                                                        size="sm"
-                                                        onClick={() => onEdit(product)}
-                                                    >
-                                                        <Pencil className="h-4 w-4" />
+                                                    <Button variant="secondary" size="sm" asChild>
+                                                        <Link href={`/products/${product.id}`}>
+                                                            <Pencil className="h-4 w-4" />
+                                                        </Link>
                                                     </Button>
                                                     <Button
                                                         variant="danger"
