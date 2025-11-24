@@ -37,7 +37,7 @@ Before you begin, ensure you have the following installed:
 
 ```bash
 git clone <repository-url>
-cd adonis-ecommerce
+cd brandvault360-react-adonis-inertia-task
 ```
 
 ### 2. Install Dependencies
@@ -137,7 +137,7 @@ The application will be available at `http://localhost:3333`
 ## Project Structure
 
 ```
-adonis-ecommerce/
+/
 ├── app/
 │   ├── controllers/     # Application controllers
 │   │   ├── admin/       # Admin panel controllers
