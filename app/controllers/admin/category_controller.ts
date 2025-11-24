@@ -133,8 +133,8 @@ export default class CategoryController {
         const data = await request.validateUsing(
             vine.compile(
                 vine.object({
-                    name: vine.string().minLength(1).optional(),
-                    slug: vine.string().optional(),
+                    name: vine.string().minLength(1).maxLength(255),
+                    slug: vine.string().maxLength(255).trim().optional(),
                     description: vine.string().optional(),
                     image: vine
                         .file({
