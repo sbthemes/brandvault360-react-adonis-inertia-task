@@ -45,6 +45,14 @@ router
             .delete('/categories/:id', '#controllers/admin/category_controller.destroy')
             .as('categories.destroy')
 
-        router.get('/options', '#controllers/admin/option_controller.index').as('option')
+        router.get('/options', '#controllers/admin/option_controller.index').as('options.index')
+        router.post('/options', '#controllers/admin/option_controller.store').as('options.store')
+        router.get('/options/:id', '#controllers/admin/option_controller.show').as('options.show')
+        router
+            .post('/options/:id', '#controllers/admin/option_controller.update')
+            .as('options.update')
+        router
+            .delete('/options/:id', '#controllers/admin/option_controller.destroy')
+            .as('options.destroy')
     })
     .use(middleware.auth())

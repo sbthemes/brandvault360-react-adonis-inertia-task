@@ -116,7 +116,7 @@ export default function RadixFormField({
                         value={value}
                         onChange={onChange}
                         required={required}
-                        placeholder={placeholder || `Enter your ${label.toLowerCase()}`}
+                        placeholder={placeholder || `Enter your ${label?.toLowerCase() || ''}`}
                         autoComplete={autoComplete}
                         className="rounded-md"
                         step={step}
