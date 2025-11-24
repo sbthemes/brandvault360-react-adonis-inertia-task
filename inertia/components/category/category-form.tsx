@@ -80,7 +80,7 @@ export default function CategoryForm({ category, onClose }: CategoryFormProps) {
             e.preventDefault()
 
             if (category) {
-                form.post(`/categories/${category.id}`, {
+                form.post(`/admin/categories/${category.id}`, {
                     preserveScroll: true,
                     forceFormData: true,
                     onSuccess: () => {
@@ -88,7 +88,7 @@ export default function CategoryForm({ category, onClose }: CategoryFormProps) {
                     },
                 })
             } else {
-                form.post('/categories', {
+                form.post('/admin/categories', {
                     preserveScroll: true,
                     forceFormData: true,
                     onSuccess: () => {

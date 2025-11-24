@@ -216,7 +216,7 @@ export default class ProductController {
                 message: 'Product created successfully',
             })
 
-            return response.redirect(`/products/${product.id}`)
+            return response.redirect().toRoute('products.show', { id: product.id })
         } catch (error) {
             if (imagePath) {
                 try {
@@ -459,7 +459,7 @@ export default class ProductController {
                 message: 'Product updated successfully',
             })
 
-            return response.redirect(`/products/${product.id}`)
+            return response.redirect().toRoute('products.show', { id: product.id })
         } catch (error) {
             if (data.image && imagePath) {
                 try {

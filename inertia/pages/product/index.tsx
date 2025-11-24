@@ -17,7 +17,7 @@ export default function ProductIndex({ products }: ProductPageProps) {
 
     const confirmDelete = () => {
         if (selectedProduct) {
-            router.delete(`/products/${selectedProduct.id}`, {
+            router.delete(`/admin/products/${selectedProduct.id}`, {
                 preserveScroll: true,
                 onFinish: () => {
                     setSelectedProduct(null)
@@ -48,7 +48,7 @@ export default function ProductIndex({ products }: ProductPageProps) {
                 <div className="space-y-6">
                     <div className="flex items-center justify-between">
                         <h1 className="text-3xl font-bold text-gray-900">Products</h1>
-                        <Button onClick={() => router.visit('/products/create')}>
+                        <Button onClick={() => router.visit('/admin/products/create')}>
                             Create Product
                         </Button>
                     </div>

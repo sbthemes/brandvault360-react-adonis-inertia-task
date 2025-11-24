@@ -27,7 +27,7 @@ export default function ProductTable({ products, onDelete }: ProductTableProps) 
 
         const timeout = setTimeout(() => {
             router.get(
-                '/products',
+                '/admin/products',
                 { search: value, page: 1 },
                 {
                     preserveState: true,
@@ -41,7 +41,7 @@ export default function ProductTable({ products, onDelete }: ProductTableProps) 
 
     const handlePageChange = (page: number) => {
         router.get(
-            '/products',
+            '/admin/products',
             { page, search },
             {
                 preserveState: true,
@@ -143,7 +143,9 @@ export default function ProductTable({ products, onDelete }: ProductTableProps) 
                                             <Table.Cell justify="end">
                                                 <div className="flex justify-end space-x-2">
                                                     <Button variant="secondary" size="sm" asChild>
-                                                        <Link href={`/products/${product.id}`}>
+                                                        <Link
+                                                            href={`/admin/products/${product.id}`}
+                                                        >
                                                             <Pencil className="h-4 w-4" />
                                                         </Link>
                                                     </Button>

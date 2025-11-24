@@ -32,7 +32,7 @@ export default function CategoryIndex({ categories }: CategoryPageProps) {
 
     const confirmDelete = () => {
         if (selectedCategory) {
-            router.delete(`/categories/${selectedCategory.id}`, {
+            router.delete(`/admin/categories/${selectedCategory.id}`, {
                 preserveScroll: true,
                 onFinish: () => {
                     setSelectedCategory(null)

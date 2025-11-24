@@ -21,7 +21,7 @@ export default function ServerError({ error }: Props) {
                             {error?.message || 'An error occurred while processing your request.'}
                         </p>
                         <div className="mt-8 flex justify-center space-x-4">
-                            <Button asLink href="/">
+                            <Button asLink href="/admin">
                                 Go Home
                             </Button>
                         </div>

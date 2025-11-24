@@ -40,7 +40,7 @@ export default function ProductFormPage({
                                     : 'Add a new product to your catalog'}
                             </p>
                         </div>
-                        <Button variant="secondary" onClick={() => router.visit('/products')}>
+                        <Button variant="secondary" onClick={() => router.visit('/admin/products')}>
                             Back to Products
                         </Button>
                     </div>
@@ -50,7 +50,7 @@ export default function ProductFormPage({
                             product={product}
                             categories={categories || []}
                             availableOptions={availableOptions}
-                            onClose={() => router.visit('/products')}
+                            onClose={() => router.visit('/admin/products')}
                         />
                     </div>
                 </div>

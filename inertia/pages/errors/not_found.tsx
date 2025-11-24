@@ -23,7 +23,7 @@ export default function NotFound({ error }: Props) {
                             {error?.message || 'The page you are looking for does not exist.'}
                         </p>
                         <div className="mt-8 flex justify-center space-x-4">
-                            <Button asLink href="/">
+                            <Button asLink href="/admin">
                                 Go Home
                             </Button>
                         </div>

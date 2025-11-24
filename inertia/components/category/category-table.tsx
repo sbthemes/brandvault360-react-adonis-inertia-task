@@ -28,7 +28,7 @@ export default function CategoryTable({ categories, onEdit, onDelete }: Category
 
         const timeout = setTimeout(() => {
             router.get(
-                '/categories',
+                '/admin/categories',
                 { search: value, page: 1 },
                 {
                     preserveState: true,
@@ -50,7 +50,7 @@ export default function CategoryTable({ categories, onEdit, onDelete }: Category
 
     const handlePageChange = (page: number) => {
         router.get(
-            '/categories',
+            '/admin/categories',
             { page, search },
             {
                 preserveState: true,

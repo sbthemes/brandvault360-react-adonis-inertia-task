@@ -32,7 +32,7 @@ export default function OptionIndex({ options, categories }: OptionPageProps) {
 
     const confirmDelete = () => {
         if (selectedOption) {
-            router.delete(`/options/${selectedOption.id}`, {
+            router.delete(`/admin/options/${selectedOption.id}`, {
                 preserveScroll: true,
                 onFinish: () => {
                     setSelectedOption(null)

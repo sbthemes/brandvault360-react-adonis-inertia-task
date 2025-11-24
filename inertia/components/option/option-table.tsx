@@ -38,7 +38,7 @@ export default function OptionTable({ options, categories, onEdit, onDelete }: O
 
         const timeout = setTimeout(() => {
             router.get(
-                '/options',
+                '/admin/options',
                 {
                     search: value,
                     category_id: categoryFilter === 'all' ? undefined : categoryFilter,
@@ -57,7 +57,7 @@ export default function OptionTable({ options, categories, onEdit, onDelete }: O
     const handleCategoryFilter = (value: string) => {
         setCategoryFilter(value)
         router.get(
-            '/options',
+            '/admin/options',
             { search, category_id: value === 'all' ? undefined : value, page: 1 },
             {
                 preserveState: true,
@@ -76,7 +76,7 @@ export default function OptionTable({ options, categories, onEdit, onDelete }: O
 
     const handlePageChange = (page: number) => {
         router.get(
-            '/options',
+            '/admin/options',
             { page, search, category_id: categoryFilter === 'all' ? undefined : categoryFilter },
             {
                 preserveState: true,

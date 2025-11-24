@@ -148,12 +148,12 @@ export default function ProductForm({
             e.stopPropagation()
 
             if (product) {
-                form.post(`/products/${product.id}`, {
+                form.post(`/admin/products/${product.id}`, {
                     preserveScroll: true,
                     forceFormData: true,
                 })
             } else {
-                form.post('/products', {
+                form.post('/admin/products', {
                     preserveScroll: true,
                     forceFormData: true,
                 })
@@ -181,7 +181,7 @@ export default function ProductForm({
             setSelectedOptionValueIds(optionValueIds)
             setPreviousCategoryId(product.category_id)
 
-            fetch(`/products/options/${product.category_id}`)
+            fetch(`/admin/products/options/${product.category_id}`)
                 .then((res) => res.json())
                 .then((data) => {
                     if (data && Array.isArray(data)) {
@@ -209,7 +209,7 @@ export default function ProductForm({
             setSelectedOptionIds([])
             setSelectedOptionValueIds([])
             setPreviousCategoryId(currentCategoryId)
-            fetch(`/products/options/${currentCategoryId}`)
+            fetch(`/admin/products/options/${currentCategoryId}`)
                 .then((res) => res.json())
                 .then((data) => {
                     if (data && Array.isArray(data)) {
@@ -221,7 +221,7 @@ export default function ProductForm({
                 })
         } else if (currentCategoryId && previousCategoryId === null && !product?.id) {
             setPreviousCategoryId(currentCategoryId)
-            fetch(`/products/options/${currentCategoryId}`)
+            fetch(`/admin/products/options/${currentCategoryId}`)
                 .then((res) => res.json())
                 .then((data) => {
                     if (data && Array.isArray(data)) {

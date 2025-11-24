@@ -17,12 +17,12 @@ export default function Sidebar({ items }: SidebarProps) {
     const user = usePage().props.user as { email: string; fullName: string | null } | null
     const currentUrl = usePage().url
     const handleLogout = () => {
-        router.post('/logout')
+        router.post('/admin/logout')
     }
 
     const isActive = (href: string) => {
-        if (href === '/') {
-            return currentUrl === '/'
+        if (href === '/admin') {
+            return currentUrl === '/admin'
         }
         return currentUrl.startsWith(href)
     }

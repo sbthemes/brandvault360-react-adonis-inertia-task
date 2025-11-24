@@ -85,7 +85,7 @@ export default function OptionForm({ option, categories, onClose }: OptionFormPr
             form.setData('values', filteredValues as any)
 
             if (option?.id) {
-                form.post(`/options/${option.id}`, {
+                form.post(`/admin/options/${option.id}`, {
                     preserveScroll: true,
                     preserveState: true,
                     onSuccess: () => {
@@ -96,7 +96,7 @@ export default function OptionForm({ option, categories, onClose }: OptionFormPr
                     },
                 })
             } else {
-                form.post('/options', {
+                form.post('/admin/options', {
                     preserveScroll: true,
                     preserveState: true,
                     onSuccess: () => {

@@ -8,10 +8,10 @@ interface AdminLayoutProps {
 }
 
 const sidebarItems = [
-    { label: 'Dashboard', href: '/', icon: <DashboardIcon className="h-5 w-5" /> },
-    { label: 'Products', href: '/products', icon: <CubeIcon className="h-5 w-5" /> },
-    { label: 'Categories', href: '/categories', icon: <LayersIcon className="h-5 w-5" /> },
-    { label: 'Options', href: '/options', icon: <GearIcon className="h-5 w-5" /> },
+    { label: 'Dashboard', href: '/admin', icon: <DashboardIcon className="h-5 w-5" /> },
+    { label: 'Products', href: '/admin/products', icon: <CubeIcon className="h-5 w-5" /> },
+    { label: 'Categories', href: '/admin/categories', icon: <LayersIcon className="h-5 w-5" /> },
+    { label: 'Options', href: '/admin/options', icon: <GearIcon className="h-5 w-5" /> },
 ]
 
 export default function AdminLayout({ children }: AdminLayoutProps) {

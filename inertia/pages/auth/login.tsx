@@ -14,7 +14,7 @@ export default function AdminLogin() {
     const handleSubmit = React.useCallback(
         (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault()
-            form.post('/login')
+            form.post('/admin/login')
         },
         [form]
     )

@@ -21,7 +21,7 @@ export default class AdminAuthController {
             const user = await User.verifyCredentials(email, password)
             await auth.use('web').login(user)
 
-            return response.redirect('/')
+            return response.redirect('/admin')
         } catch (error) {
             session.flash('notification', {
                 type: 'error',
@@ -35,6 +35,6 @@ export default class AdminAuthController {
     async logout({ auth, response }: HttpContext) {
         await auth.use('web').logout()
 
-        return response.redirect('/login')
+        return response.redirect('/admin/login')
     }
 }
